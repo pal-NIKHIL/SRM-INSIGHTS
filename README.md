@@ -14,12 +14,12 @@ Welcome to the SRM Student Insights Hub, your go-to platform for invaluable advi
 
 We welcome contributions from the community to enhance our platform further! Here's how you can contribute:
 
-1. **Fork the Repository**: Start by forking the [SRM-INSIGHTS repository](https://github.com/your-username/SRM-INSIGHTS) to your GitHub account.
+1. **Fork the Repository**: Start by forking the [SRM-INSIGHTS repository](https://github.com/pal-NIKHIL/SRM-INSIGHTS) to your GitHub account.
 
 2. **Clone the Repository**: Clone the forked repository to your local machine using Git.
 
    ```bash
-   git clone https://github.com/your-username/SRM-INSIGHTS.git
+   git clone https://github.com/pal-NIKHIL/SRM-INSIGHTS.git
    ```
 
 3. **Navigate to the Client Directory**: Install the dependencies and start the frontend (client) server.
