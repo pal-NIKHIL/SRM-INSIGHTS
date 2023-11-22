@@ -1,35 +1,23 @@
 import {
   Box,
-  Button,
   IconButton,
   Typography,
   Stack,
   useTheme,
-  ButtonBase,
-  Dialog,
   TextField,
-  DialogContent,
-  DialogTitle,
-  Switch,
   Divider,
-  InputAdornment,
   Card,
-  SvgIcon,
-  OutlinedInput,
   useMediaQuery,
   MenuItem,
   Select,
   FormControl,
-  InputLabel,
-  Toolbar,
   Pagination,
 } from "@mui/material";
 import bg4 from "../assest/bg4.jpg";
-import { useState, useEffect, useContext, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import nofound from "../assest/nofoundbg.jpg";
 import axios from "axios";
-import { UserContext } from "../store/usercontext";
 import InterviewCard from "../component/interviewCard";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
 import { BiSolidXCircle } from "react-icons/bi";
@@ -38,10 +26,12 @@ const Logoslider = lazy(() => import("../component/logoslider"));
 const InterviewPage = () => {
   const [loading, setLoading] = useState(true);
   const [allinterview, setinterview] = useState([]);
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   useEffect(() => {
     axios
-      .get("http://localhost:3001/get-interview")
+      .get("https://srm-insights-backend.vercel.app/get-interview")
       .then((response) => {
         setinterview(response.data);
         setLoading(false);
@@ -113,21 +103,11 @@ const InterviewPage = () => {
   ];
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "#FAF0E6",
-        bgcolor: "white",
-        // alignItems: "center",
-      }}
-    >
+    <Box>
       <Stack
         sx={{
           alignItems: "center",
           justifyContent: "end",
-          my: 1,
-          mx: 1,
           backgroundColor: "rgb(248,64,64)",
           p: 5,
           position: "relative",
@@ -136,77 +116,138 @@ const InterviewPage = () => {
           backgroundSize: "contain",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          height: "50vh",
+          height: isLargeScreen ? "50vh" : "40vh",
         }}
       >
-        <Card
-          sx={{
-            marginBottom: "-70px",
-            width: "500px",
-          }}
-        >
-          <Stack
-            direction={"row"}
-            bgcolor={"#FAF0E6"}
-            spacing={1}
-            px={1}
-            alignItems={"center"}
+        {isLargeScreen && (
+          <Card
+            sx={{
+              marginBottom: "-70px",
+            }}
           >
-            <div style={{ marginLeft: "8px", marginTop: "6px" }}>
-              <HiOutlineSearch />
-            </div>
-            <TextField
-              value={searchcompany}
-              onChange={(event) => setsearchcompany(event.target.value)}
-              fullWidth
-              placeholder="Company Name"
-              sx={{
-                "& fieldset": { border: "none" },
-              }}
-            />
+            <Stack
+              direction={isLargeScreen ? "row" : "row"}
+              bgcolor={"#FAF0E6"}
+              spacing={1}
+              px={1}
+              alignItems={"center"}
+            >
+              <div style={{ marginLeft: "8px", marginTop: "6px" }}>
+                <HiOutlineSearch />
+              </div>
+              <TextField
+                value={searchcompany}
+                onChange={(event) => setsearchcompany(event.target.value)}
+                fullWidth
+                placeholder="Company Name"
+                sx={{
+                  "& fieldset": { border: "none" },
+                }}
+              />
 
-            <IconButton
-              onClick={() => {
-                setsearchcompany("");
-                setsearchRole("");
-              }}
-            >
-              <BiSolidXCircle />
-            </IconButton>
-            <Divider orientation="vertical" flexItem />
-            <FormControl
-              fullWidth
-              sx={{
-                "& fieldset": { border: "none" },
-              }}
-            >
-              <Select
-                value={searchRole}
-                displayEmpty
-                onChange={handleRoleChange}
-                style={{
-                  fontSize: "16px",
+              <IconButton
+                onClick={() => {
+                  setsearchcompany("");
+                  setsearchRole("");
                 }}
               >
-                <MenuItem value="">Job Role</MenuItem>
-                {roles.map((role) => (
-                  <MenuItem key={role} value={role}>
-                    {role}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Stack>
-        </Card>
+                <BiSolidXCircle />
+              </IconButton>
+              <Divider orientation="vertical" flexItem />
+              <FormControl
+                fullWidth
+                sx={{
+                  "& fieldset": { border: "none" },
+                }}
+              >
+                <Select
+                  value={searchRole}
+                  displayEmpty
+                  onChange={handleRoleChange}
+                  style={{
+                    fontSize: "16px",
+                  }}
+                >
+                  <MenuItem value="">Job Role</MenuItem>
+                  {roles.map((role) => (
+                    <MenuItem key={role} value={role}>
+                      {role}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Card>
+        )}
       </Stack>
-      <Grid2
-        container
-        spacing={3}
-        mx={0.5}
-        mt={5}
-        mb={3}
-        justifyContent={"center"}
-      >
+      {!isLargeScreen && (
+        <Stack spacing={2} mt={2}>
+          <Card>
+            <Stack
+              direction="row"
+              bgcolor={"#FAF0E6"}
+              spacing={1}
+              px={1}
+              alignItems={"center"}
+            >
+              <div style={{ marginLeft: "8px", marginTop: "6px" }}>
+                <HiOutlineSearch />
+              </div>
+              <TextField
+                value={searchcompany}
+                onChange={(event) => setsearchcompany(event.target.value)}
+                fullWidth
+                placeholder="Company Name"
+                sx={{
+                  "& fieldset": { border: "none" },
+                }}
+              />
+
+              <IconButton
+                onClick={() => {
+                  setsearchcompany("");
+                  setsearchRole("");
+                }}
+              >
+                <BiSolidXCircle />
+              </IconButton>
+            </Stack>
+          </Card>
+          <Card>
+            <Stack
+              direction="row"
+              bgcolor={"#FAF0E6"}
+              spacing={1}
+              px={1}
+              alignItems={"center"}
+            >
+              <FormControl
+                fullWidth
+                sx={{
+                  "& fieldset": { border: "none" },
+                }}
+              >
+                <Select
+                  value={searchRole}
+                  displayEmpty
+                  onChange={handleRoleChange}
+                  style={{
+                    fontSize: "16px",
+                  }}
+                >
+                  <MenuItem value="">Job Role</MenuItem>
+                  {roles.map((role) => (
+                    <MenuItem key={role} value={role}>
+                      {role}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Card>
+        </Stack>
+      )}
+      <Grid2 container spacing={3} mt={5} mb={3} justifyContent={"center"}>
         {!loading && currentCards.length === 0 && (
           <Stack spacing={1}>
             <img

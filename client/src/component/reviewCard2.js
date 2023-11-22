@@ -1,20 +1,10 @@
 import React, { useContext, useState } from "react";
-import { HiUserCircle } from "react-icons/hi2";
-import { BiUpvote, BiDownvote } from "react-icons/bi";
 import {
   Card,
-  CardHeader,
   Typography,
-  CardContent,
-  CardActions,
-  Avatar,
-  Box,
-  Slider,
   useTheme,
   Stack,
-  Button,
-  IconButton,
-  CardActionArea,
+  useMediaQuery,
 } from "@mui/material";
 
 import { BiChevronDown, BiChevronUp } from "react-icons/bi";
@@ -22,6 +12,7 @@ import axios from "axios";
 import { UserContext } from "../store/usercontext";
 const ReviewCard2 = ({ data, backgroundColor }) => {
   const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const token = localStorage.getItem("token");
   const { _id, name, date, content, upvotes, downvotes, avatar } = data;
   const formatDate = (dateString) => {
@@ -32,7 +23,7 @@ const ReviewCard2 = ({ data, backgroundColor }) => {
   const handleupvote = () => {
     axios
       .post(
-        "http://localhost:3001/upvote",
+        "https://srm-insights-backend.vercel.app/upvote",
         { _id },
         {
           headers: {
@@ -50,7 +41,7 @@ const ReviewCard2 = ({ data, backgroundColor }) => {
   const handledownvote = () => {
     axios
       .post(
-        "http://localhost:3001/downvote",
+        "https://srm-insights-backend.vercel.app/downvote",
         { _id },
         {
           headers: {
@@ -113,32 +104,26 @@ const ReviewCard2 = ({ data, backgroundColor }) => {
               <Typography variant="subtitle2">{formattedDate}</Typography>
             </Stack>
           </Stack>
-
-          <Button
-            endIcon={
-              readmore ? (
-                <BiChevronDown color="white" />
-              ) : (
-                <BiChevronUp color="white" />
-              )
-            }
-            variant="outlined"
-            onClick={() => setreadmore(!readmore)}
+          <Stack
+            direction="row"
+            alignItems="center"
             sx={{
-              backgroundColor: "#2E2E2E",
-              alignItems: "center",
-              borderRadius: "20px",
+              cursor: "pointer",
               "&:hover": {
-                transform: "none",
-                boxShadow: "0px 5px 10px 0px rgba(0,0,0,0.2)",
-                backgroundColor: "#161313",
+                backgroundColor: "#f0f0f0",
+                borderRadius: "20px",
               },
             }}
+            onClick={() => setreadmore(!readmore)}
+            px={1}
           >
-            <Typography m={1} variant="subtitle2" color="white">
-              Read More
-            </Typography>
-          </Button>
+            {readmore ? <BiChevronDown /> : <BiChevronUp />}
+            {isLargeScreen && (
+              <Typography m={1} variant="subtitle1">
+                {readmore ? "Read More" : "Read Less"}
+              </Typography>
+            )}
+          </Stack>
         </Stack>
       </Stack>
     </Card>

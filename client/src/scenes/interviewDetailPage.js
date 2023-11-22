@@ -1,31 +1,19 @@
 import {
   Box,
-  Button,
-  IconButton,
   Typography,
   Stack,
   useTheme,
-  ButtonBase,
-  Dialog,
-  TextField,
-  DialogContent,
-  DialogTitle,
-  Switch,
   Divider,
-  InputAdornment,
   Card,
-  SvgIcon,
-  OutlinedInput,
+  useMediaQuery,
 } from "@mui/material";
-import bg5 from "../assest/bg5.jpg";
+import bg10 from "../assest/bg10.jpg";
 import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
-import { HiUserCircle, HiXCircle, HiMiniCheckCircle } from "react-icons/hi2";
-import { BiBarChart } from "react-icons/bi";
+import { HiMiniCheckCircle } from "react-icons/hi2";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
-  FaBuilding,
   FaMapMarkerAlt,
   FaUserTie,
   FaBriefcase,
@@ -40,10 +28,11 @@ const InterviewDetail = () => {
   const [jobDetail, setjobDetail] = useState(null);
   const [loading, setLoading] = useState(true);
   const [companylogo, setcompanylogo] = useState(defaultlogo);
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   useEffect(() => {
     if (_id) {
       axios
-        .get(`http://localhost:3001/get-interview/${_id}`)
+        .get(`https://srm-insights-backend.vercel.app/get-interview/${_id}`)
         .then((response) => {
           setjobDetail(response.data);
 
@@ -60,8 +49,25 @@ const InterviewDetail = () => {
     }
   }, [_id]);
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+          width: "90vw",
+        }}
+      >
+        <img
+          src="https://i.pinimg.com/originals/c7/e1/b7/c7e1b7b5753737039e1bdbda578132b8.gif"
+          alt="Loading..."
+          width={"250px"}
+        />
+      </Box>
+    );
   }
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -69,27 +75,25 @@ const InterviewDetail = () => {
   const formattedDate = formatDate(jobDetail.date);
   return (
     <Box>
-      <Stack>
+      <Stack my={1}>
         <Stack
-          py={"16vh"}
+          py={"8vh"}
           px={"8vw"}
-          sx={{
-            justifyContent: "center",
-            my: 2,
-            // background: "linear-gradient(to right, #0f2027,#203a43,#2c5364)",
-            p: 5,
-            backgroundImage: `url(https://img.freepik.com/premium-vector/hr-process-concept-3d-isometric-design-man-choosing-online-resume-best-candidates-applicants-interview-human-resources-vector-isometry-illustration-with-people-scene-web-graphic_9209-10711.jpg)`,
-            backgroundColor: "#06dbaf",
-            borderRadius: "20px",
-            backgroundSize: "contain",
-            // backgroundRepeat: "no-repeat",
-            backgroundPosition: "right",
-            height: "50vh",
-            backgroundImage: `linear-gradient(rgba(185,160,254,0.5),rgb(221,180,255,0.5)), url(https://img.freepik.com/premium-vector/hr-process-concept-3d-isometric-design-man-choosing-online-resume-best-candidates-applicants-interview-human-resources-vector-isometry-illustration-with-people-scene-web-graphic_9209-10711.jpg)`,
-          }}
+          direction={isLargeScreen ? "row" : "column"}
           spacing={2}
+          justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            background: `linear-gradient(to right, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.9)),url(${bg10})`,
+            borderRadius: "10px",
+          }}
         >
-          <Typography variant="h1">Interview Details</Typography>
+          <Typography
+            variant={isLargeScreen ? "h1" : "h2"}
+            textAlign={"center"}
+          >
+            Interview Details
+          </Typography>
         </Stack>
 
         <Grid2 container spacing={2} mt={2}>
@@ -102,14 +106,14 @@ const InterviewDetail = () => {
               }}
               spacing={2}
             >
-              <Stack direction={"row"} justifyContent={"space-between"}>
-                <Stack direction="row" alignItems={"center"} spacing={1}>
-                  {/* <img src={companylogo} height={"100px"} /> */}
-
-                  <Typography variant="h3">
-                    {jobDetail.company + " | " + jobDetail.role}
-                  </Typography>
-                </Stack>
+              <Stack
+                direction={isLargeScreen ? "row" : "column"}
+                justifyContent={"space-between"}
+                spacing={1}
+              >
+                <Typography variant="h3">
+                  {jobDetail.company + " | " + jobDetail.role}
+                </Typography>
                 <Stack
                   color={jobDetail.offerstatus ? "green" : "red"}
                   direction={"row"}

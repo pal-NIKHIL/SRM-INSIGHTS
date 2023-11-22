@@ -32,11 +32,10 @@ import {
   InputLabel,
   FormControl,
   Select,
+  useMediaQuery,
 } from "@mui/material";
-import bg4 from "../assest/bg4.jpg";
 import { Field, Formik } from "formik";
 import { useTheme } from "@mui/material";
-import { BiChevronDown, BiChevronUp, BiCross } from "react-icons/bi";
 import { AiOutlineClose } from "react-icons/ai";
 import axios from "axios";
 import donegif from "../assest/done.gif";
@@ -54,6 +53,8 @@ function InterviewInputDialog({ handleInterviewDialog }) {
     content: [],
   });
   const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   const [numSteps, setNumSteps] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState();
@@ -143,7 +144,7 @@ function InterviewInputDialog({ handleInterviewDialog }) {
           color: "white",
         }}
         py={2}
-        px={4}
+        px={isLargeScreen ? 4 : 0}
         height={"100%"}
       >
         {loading ? (
@@ -161,14 +162,6 @@ function InterviewInputDialog({ handleInterviewDialog }) {
           </Box>
         ) : (
           <>
-            <Box position={"absolute"}>
-              <img
-                src={
-                  "https://cdn3d.iconscout.com/3d/premium/thumb/sport-girl-pointing-to-down-side-using-both-hand-8509247-6740768.png?f=webp"
-                }
-                width={"150px"}
-              />
-            </Box>
             <Stack justifyContent={"space-between"} p={2}>
               <Stepper activeStep={activeStep} alternativeLabel>
                 {steps.map((label, index) => (

@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import ReviewPage from "./scenes/reviewPage";
 
 import {
-  Container,
   CssBaseline,
   Box,
   AppBar,
@@ -10,107 +9,96 @@ import {
   Typography,
   Drawer,
   IconButton,
-  Avatar,
   ButtonBase,
   Toolbar,
   Divider,
   Button,
   Menu,
   MenuItem,
-  Dialog,
-  TextField,
-  DialogContent,
-  DialogTitle,
-  Switch,
-  Card,
-  Grid,
-  Stepper,
-  StepLabel,
-  StepContent,
-  Step,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  useMediaQuery,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import { alpha } from "@mui/material";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { HiUserCircle } from "react-icons/hi2";
 import { useTheme } from "@mui/material";
-import community1 from "./assest/community1.png";
+import hand from "./assest/hand.png";
 import { HiOutlineBars3 } from "react-icons/hi2";
-import { VscFeedback } from "react-icons/vsc";
-import interviewIcon from "./assest/interview.png";
 import { Link } from "react-router-dom";
-import { PiSuitcaseSimpleBold } from "react-icons/pi";
-import { FaHome, FaUserAstronaut } from "react-icons/fa";
-import { IoNotifications } from "react-icons/io5";
-import { SlLogout } from "react-icons/sl";
+import { FaHome } from "react-icons/fa";
 import { RiArrowDropDownFill } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
 import { TbLogout2 } from "react-icons/tb";
-import logo from "./assest/logo1.png";
+import logo from "./assest/logo.svg";
 import axios from "axios";
 import { useContext } from "react";
 import { UserContext } from "./store/usercontext";
 import InterviewPage from "./scenes/interviewPage";
 import InterviewDetail from "./scenes/interviewDetailPage";
-import { BiChevronDown, BiChevronUp } from "react-icons/bi";
-import {
-  FaBuilding,
-  FaMapMarkerAlt,
-  FaUserTie,
-  FaBriefcase,
-  FaCalendarAlt,
-} from "react-icons/fa";
-import { AiOutlineClose } from "react-icons/ai";
-import { Field, Formik } from "formik";
-import { BiUpArrow } from "react-icons/bi";
-
+import { FaBuilding, FaBriefcase } from "react-icons/fa";
 import HomePage from "./scenes/homePage";
+import userIcon from "./assest/avataricon/user-avatar.png";
+import AvatarPicker from "./component/avatarpicker";
 const InterviewInputDialog = lazy(() => import("./component/interviewDialog"));
 const ReviewInputDialog = lazy(() => import("./component/reviewDialog"));
 const LoginPage = lazy(() => import("./scenes/loginPage"));
 function App() {
   const isUserlogin = localStorage.getItem("token");
   const activepath = useLocation().pathname;
-  const navigate = useNavigate();
   const theme = useTheme();
   const [ismobilescreen, setmobilescreen] = useState(false);
   const drawerWidth = 240;
   const minidrawerWidth = 80;
-  const [openprofile, setopenprofile] = useState(true);
-  const [anchorel, setanchorel] = useState(null);
 
   const { handlelogin, state, handlelogout } = useContext(UserContext);
-
   const handleDrawerToggle = () => {
     sethoverdrawer(true);
     setmobilescreen(!ismobilescreen);
   };
 
   const [hoverdrawer, sethoverdrawer] = useState(false);
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
   const [openinterviewDialog, setopeninterviewDialog] = useState(false);
   const [openreviewDialog, setopenreviewDialog] = useState(false);
   const [openloginDialog, setopenloginDialog] = useState(false);
+  const [avatarpicker, setavatarpicker] = useState(false);
+  const [avatarImage, setavatarImage] = useState(null);
   const handleReviewDialog = () => setopenreviewDialog(!openreviewDialog);
   const handleInterviewDialog = () =>
     setopeninterviewDialog(!openinterviewDialog);
   useEffect(() => {
+    if (avatarImage != null) {
+      state.avatar = avatarImage;
+      axios
+        .post(
+          "https://srm-insights-backend.vercel.app/profileUpdate",
+          { data: avatarImage },
+          {
+            headers: {
+              "x-access-token": localStorage.getItem("token"),
+            },
+          }
+        )
+        .then(() => console.log("succees"))
+        .catch((error) => console.log(error));
+    }
+  }, [avatarImage, setavatarImage]);
+
+  useEffect(() => {
     if (isUserlogin) {
       axios
-        .get("http://localhost:3001/get-userlogin", {
+        .get("https://srm-insights-backend.vercel.app/get-userlogin", {
           headers: {
             "x-access-token": isUserlogin,
           },
         })
-        .then((response) => handlelogin(response.data))
+        .then((response) => {
+          handlelogin(response.data);
+        })
         .catch((e) => {
           console.log("error while fetching userData");
         });
     }
   }, [isUserlogin]);
-  console.log(state.avatar);
   const drawerItem = [
     {
       title: "HomePage",
@@ -147,8 +135,8 @@ function App() {
         alignItems="center"
         width={"100%"}
       >
-        <img src={logo} width={"50px"} justifyContent="center" />
-        <Toolbar />
+        <img src={logo} width={"90%"} justifyContent="center" />
+        {!hoverdrawer && <Toolbar />}
         <Divider color="white" mt={2} />
         <Stack spacing={4} mt={2} justifyContent={"center"} width={"100%"}>
           {drawerItem.map((item) => {
@@ -157,6 +145,11 @@ function App() {
                 width="100%"
                 component={Link}
                 to={item.path}
+                onClick={() => {
+                  if (ismobilescreen) {
+                    setmobilescreen(false);
+                  }
+                }}
                 sx={{
                   justifyContent: hoverdrawer ? "start" : "center",
                   borderRadius: "0px",
@@ -187,7 +180,7 @@ function App() {
                   {item.icon}
                   {hoverdrawer && (
                     <Typography
-                      variant="body2"
+                      variant="subtitle1"
                       color={activepath === item.path ? `white` : "#656671"}
                     >
                       {item.title}
@@ -227,9 +220,9 @@ function App() {
               spacing={2}
               m={1}
             >
-              <TbLogout2 />
+              <TbLogout2 size={22} />
               {hoverdrawer && (
-                <Typography variant="body2" color={"#656671"}>
+                <Typography variant="subtitle1" color={"#656671"}>
                   Logout
                 </Typography>
               )}
@@ -240,7 +233,6 @@ function App() {
       {hoverdrawer && (
         <Box>
           <Stack textAlign={"center"}>
-            <img src={community1} width={"100%"} />
             <Typography variant="subtitle2">Join the community</Typography>
             <Typography variant="subtitle2">and find out more</Typography>
           </Stack>
@@ -248,8 +240,13 @@ function App() {
       )}
     </Box>
   );
-
-  console.log(activepath);
+  const open = Boolean(avatarpicker);
+  const handleprofileclick = () => {
+    setavatarpicker(!avatarpicker);
+  };
+  const handleClose = () => {
+    setavatarpicker(null);
+  };
   return (
     <Box display={"flex"} bgcolor={"#fefefe"}>
       <Suspense>
@@ -302,32 +299,53 @@ function App() {
           <Box sx={{ display: { xs: "none", md: "block" } }}></Box>
 
           <Box>
-            <Button
-              type="submit"
-              variant="outlined"
-              onClick={() => {
-                if (activepath === "/interview-experience") {
-                  setopeninterviewDialog(!openinterviewDialog);
-                } else if (activepath === "/campus-experience") {
-                  setopenreviewDialog(!openreviewDialog);
-                }
-              }}
-              sx={{
-                backgroundColor: "#161313",
-                alignItems: "center",
-                borderRadius: "30px",
-                "&:hover": {
-                  boxShadow: "0px 5px 10px 0px rgba(0,0,0,0.2)",
+            {activepath === "/interview-experience" && (
+              <Button
+                type="submit"
+                variant="outlined"
+                onClick={() => {
+                  if (state.islogin === false) setopenloginDialog(true);
+                  else setopeninterviewDialog(!openinterviewDialog);
+                }}
+                sx={{
                   backgroundColor: "#161313",
-                },
-              }}
-            >
-              <Typography m={1} variant="subtitle2" color="white">
-                {activepath === "/interview-experience"
-                  ? "Share Experience"
-                  : "Create Review"}
-              </Typography>
-            </Button>
+                  alignItems: "center",
+                  borderRadius: "30px",
+                  "&:hover": {
+                    boxShadow: "0px 5px 10px 0px rgba(0,0,0,0.2)",
+                    backgroundColor: "#161313",
+                  },
+                }}
+              >
+                <Typography m={1} variant="subtitle2" color="white">
+                  Share Experience
+                </Typography>
+              </Button>
+            )}
+            {activepath === "/campus-experience" && (
+              <Button
+                type="submit"
+                variant="outlined"
+                onClick={() => {
+                  if (state.islogin === false) setopenloginDialog(true);
+                  else setopenreviewDialog(!openreviewDialog);
+                }}
+                sx={{
+                  backgroundColor: "#161313",
+                  alignItems: "center",
+                  borderRadius: "30px",
+                  "&:hover": {
+                    boxShadow: "0px 5px 10px 0px rgba(0,0,0,0.2)",
+                    backgroundColor: "#161313",
+                  },
+                }}
+              >
+                <Typography m={1} variant="subtitle2" color="white">
+                  Create Review
+                </Typography>
+              </Button>
+            )}
+
             {!isUserlogin ? (
               <Button
                 color="inherit"
@@ -337,20 +355,60 @@ function App() {
                 Login
               </Button>
             ) : (
-              <Button
-                color="inherit"
-                sx={{
-                  "&:hover": {
-                    transform: "none",
-                    boxShadow: "none", // New shadow on hover
-                    backgroundColor: "lightgrey",
-                  },
-                }}
-                startIcon={<img src={state.avatar} width={"40px"} />}
-                endIcon={<RiArrowDropDownFill />}
-              >
-                {state.name}
-              </Button>
+              <>
+                <Button
+                  color="inherit"
+                  sx={{
+                    "&:hover": {
+                      transform: "none",
+                      boxShadow: "none",
+                      backgroundColor: "lightgrey",
+                    },
+                  }}
+                  startIcon={
+                    <img
+                      src={state.avatar === "" ? userIcon : state.avatar}
+                      style={{
+                        objectFit: "contain",
+                        height: "30px",
+                      }}
+                    />
+                  }
+                  endIcon={isLargeScreen && <RiArrowDropDownFill />}
+                  onClick={() => handleprofileclick()}
+                >
+                  {isLargeScreen && state.name}
+                </Button>
+                <Menu
+                  sx={{
+                    marginTop: "50px",
+                  }}
+                  id="basic-menu"
+                  avatarpicker={avatarpicker}
+                  open={open}
+                  onClose={handleClose}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem>
+                    <AvatarPicker
+                      setavatarpicker={setavatarpicker}
+                      avatarpicker={avatarpicker}
+                      setavatarImage={setavatarImage}
+                    />
+                  </MenuItem>
+                </Menu>
+              </>
             )}
           </Box>
         </Box>
@@ -424,7 +482,8 @@ function App() {
         sx={{
           flexGrow: 1,
           p: 1,
-          mt: 8,
+          mt: 10,
+          mx: 1,
           width: {
             md: `calc(100% - ${hoverdrawer ? drawerWidth : minidrawerWidth}px)`,
           },

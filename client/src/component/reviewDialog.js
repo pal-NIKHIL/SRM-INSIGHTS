@@ -5,24 +5,20 @@ import {
   Typography,
   Stack,
   useTheme,
-  ButtonBase,
   Dialog,
   TextField,
-  DialogContent,
-  DialogTitle,
   Switch,
-  Card,
   Divider,
-  CircularProgress,
+  useMediaQuery,
 } from "@mui/material";
 import { Formik } from "formik";
 import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import axios from "axios";
 import { useState, useContext } from "react";
-import { HiUserCircle } from "react-icons/hi2";
 import donegif from "../assest/done.gif";
 import loadinggif from "../assest/loading.gif";
 import { AiOutlineClose } from "react-icons/ai";
+import userIcon from "../assest/avataricon/user-avatar.png";
 import { UserContext } from "../store/usercontext";
 const ReviewInputDialog = ({ handleReviewDialog }) => {
   const theme = useTheme();
@@ -35,10 +31,12 @@ const ReviewInputDialog = ({ handleReviewDialog }) => {
   const [done, setdone] = useState(false);
   const [errorMesage, seterrorMessage] = useState("");
   const { state } = useContext(UserContext);
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
+
   const handlecreateReview = (data) => {
     setLoading(true);
     axios
-      .post("http://localhost:3001/create-review", data, {
+      .post("https://srm-insights-backend.vercel.app/create-review", data, {
         headers: {
           "x-access-token": localStorage.getItem("token"),
         },
@@ -72,8 +70,8 @@ const ReviewInputDialog = ({ handleReviewDialog }) => {
         sx={{
           background: `white`,
         }}
-        p={4}
-        height={"65vh"}
+        p={isLargeScreen ? 4 : 1}
+        // height={"65vh"}
       >
         {loading ? (
           <Box
@@ -140,7 +138,10 @@ const ReviewInputDialog = ({ handleReviewDialog }) => {
                     </Stack>
                     <Divider />
                     <Stack direction={"row"} alignItems={"center"} spacing={2}>
-                      <img src={state.avatar} width={"40px"} />
+                      <img
+                        src={state.avatar === "" ? userIcon : state.avatar}
+                        width={"40px"}
+                      />
                       <Typography>{state.name}</Typography>
                     </Stack>
 

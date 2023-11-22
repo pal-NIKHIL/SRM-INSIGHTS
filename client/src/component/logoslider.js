@@ -1,34 +1,11 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Typography,
-  Stack,
-  useTheme,
-  ButtonBase,
-  Dialog,
-  TextField,
-  DialogContent,
-  DialogTitle,
-  Switch,
-  Divider,
-  InputAdornment,
-  Card,
-  SvgIcon,
-  OutlinedInput,
-  useMediaQuery,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
-  Toolbar,
-} from "@mui/material";
+import { useTheme, Card, useMediaQuery } from "@mui/material";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../style.css";
 const LogoSlider = () => {
-  const isXsOrSm = useMediaQuery("(max-width:600px)");
+  const theme = useTheme();
+  const isLargeScreen = useMediaQuery(theme.breakpoints.up("md"));
 
   const images = require.context("../assest/companylogos/", true);
   const imageList = images.keys().map((image) => images(image));
@@ -89,7 +66,7 @@ const LogoSlider = () => {
         {...settings}
         style={{
           height: "100px",
-          width: isXsOrSm ? "100vw" : "88vw",
+          width: isLargeScreen ? "90vw" : "80vw",
         }}
       >
         {imageList.map((image, index) => (
@@ -119,7 +96,7 @@ const LogoSlider = () => {
         rtl={true}
         style={{
           height: "100px",
-          width: isXsOrSm ? "100vw" : "88vw",
+          width: isLargeScreen ? "90vw" : "80vw",
         }}
       >
         {imageList.map((image, index) => (
